@@ -17,6 +17,9 @@
 #    # this block will be executed when seg.block_example= is called
 #    # and when seg.block_example is called
 #
+
+require 'date'
+
 class HL7::Message::Segment
   extend HL7::Message::SegmentListStorage
   include HL7::Message::SegmentFields
@@ -184,6 +187,10 @@ class HL7::Message::Segment
 
   def self.convert_to_ts(value) #:nodoc:
     value.respond_to?(:to_hl7) ? value.to_hl7 : value
+  end
+
+  def self.convert_to_datetime(value)
+    Time.strptime(value,'%Y%m%d%H%M')
   end
 
 end
