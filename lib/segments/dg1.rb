@@ -4,7 +4,7 @@ class HL7::Message::Segment::DG1 < HL7::Message::Segment
   add_field :set_id
 
   add_field :procedure_code, :idx => 3
-  add_field :prodedure_description
+  add_field :procedure_description
   add_field :appointment_time do |value|
     convert_to_datetime(value)
   end
