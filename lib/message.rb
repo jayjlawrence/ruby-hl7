@@ -80,11 +80,23 @@ class HL7::Message
   # access a segment of the message
   # index:: can be a Range, Fixnum or anything that
   #         responds to to_sym
+  # or
+  # index:: can be SEGMENT-element(.item) i.e. PID-4.1
   def []( index )
     ret = nil
-
     if index.kind_of?(Range) || index.kind_of?(Fixnum)
       ret = @segments[ index ]
+    elsif index.is_a?(String) && index.include?('-')
+      (segment, delim, element)=index.partition('-')
+      segment=segment.to_sym
+      if @segments_by_name.has_key?(segment)
+        if element.include?('.')
+          (element, delim, item)=element.partition('.')
+          ret = @segments_by_name[ segment ].first.e(element.to_i).split(@item_delim)[item.to_i-1]
+        else
+          ret = @segments_by_name[ segment ].first.e(element.to_i)
+        end
+      end
     elsif (index.respond_to? :to_sym)
       ret = @segments_by_name[ index.to_sym ]
       ret = ret.first if ret && ret.length == 1
