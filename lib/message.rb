@@ -114,6 +114,25 @@ class HL7::Message
   #         responds to to_sym
   # value:: an HL7::Message::Segment object
   def []=( index, value )
+
+    # JJL - Support my PID-11.1 syntax
+    if index.is_a?(String) && index.include?('-')
+      (segment, delim, element)=index.partition('-')
+      segment=segment.to_sym
+      if @segments_by_name.has_key?(segment)
+        if element.include?('.')
+          (element, delim, item)=element.partition('.')
+          data=@segments_by_name[ segment ].first.e(element.to_i).split(@item_delim)
+          data[item.to_i-1]=value
+          ret = @segments_by_name[ segment ].first.write_field(element.to_i, data.join(@item_delim))
+        else
+          ret = @segments_by_name[ segment ].first.write_field(element.to_i, value)
+        end
+      end
+      return ret
+    end
+    # /JJL
+
     unless ( value && value.kind_of?(HL7::Message::Segment) )
       raise HL7::Exception.new( "attempting to assign something other than an HL7 Segment" )
     end
