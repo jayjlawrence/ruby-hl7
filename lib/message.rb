@@ -54,7 +54,7 @@ class HL7::Message
 
     @message_parser = HL7::MessageParser.new(@delimiter)
 
-    parse( raw_msg ) if raw_msg
+    parse( raw_msg.chomp ) if raw_msg
 
     if block_given?
       blk.call self
