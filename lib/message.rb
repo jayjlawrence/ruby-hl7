@@ -165,6 +165,13 @@ class HL7::Message
     sequence_segments unless @parsing # let's auto-set the set-id as we go
   end
 
+  # delete all segments named 'segment' from the hl7 message
+  #
+  def delete( segment )
+    @segments.delete_if{ |s| s.class.to_s.rpartition('::')[2]==segment.to_s }
+    @segments_by_name.delete(segment.to_sym)
+  end
+
   # yield each segment in the message
   def each # :yields: segment
     return unless @segments
