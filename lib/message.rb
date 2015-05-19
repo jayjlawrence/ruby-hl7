@@ -86,6 +86,8 @@ class HL7::Message
     ret = nil
     if index.kind_of?(Range) || index.kind_of?(Fixnum)
       ret = @segments[ index ]
+
+    # JJL - support my PID-11.1 syntax
     elsif index.is_a?(String) && index.include?('-')
       (segment, delim, element)=index.partition('-')
       segment=segment.to_sym
@@ -97,6 +99,8 @@ class HL7::Message
           ret = @segments_by_name[ segment ].first.e(element.to_i)
         end
       end
+    # /JJL
+
     elsif (index.respond_to? :to_sym)
       ret = @segments_by_name[ index.to_sym ]
       ret = ret.first if ret && ret.length == 1
