@@ -124,15 +124,21 @@ class HL7::Message
     # JJL - Support my PID-11.1 syntax
     if index.is_a?(String) && index.include?('-')
       (segment, delim, element)=index.partition('-')
-      segment=segment.to_sym
+      if matches=segment.match(/^(\w+);(\d+)/)
+        segment=matches[1].to_sym
+        index=matches[2].to_i
+      else
+        segment=segment.to_sym
+        index=1
+      end
       if @segments_by_name.has_key?(segment)
         if element.include?('.')
           (element, delim, item)=element.partition('.')
-          data=@segments_by_name[ segment ].first.e(element.to_i).split(@item_delim)
+          data=@segments_by_name[ segment ][index-1].e(element.to_i).split(@item_delim)
           data[item.to_i-1]=value
-          ret = @segments_by_name[ segment ].first.write_field(element.to_i, data.join(@item_delim))
+          ret = @segments_by_name[ segment ][index-1].write_field(element.to_i, data.join(@item_delim))
         else
-          ret = @segments_by_name[ segment ].first.write_field(element.to_i, value)
+          ret = @segments_by_name[ segment ][index-1].write_field(element.to_i, value)
         end
       end
       return ret
