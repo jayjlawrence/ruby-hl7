@@ -90,13 +90,19 @@ class HL7::Message
     # JJL - support my PID-11.1 syntax
     elsif index.is_a?(String) && index.include?('-')
       (segment, delim, element)=index.partition('-')
-      segment=segment.to_sym
+      if matches=segment.match(/^(\w+);(\d+)/)
+        segment=matches[1].to_sym
+        index=matches[2].to_i
+      else
+        segment=segment.to_sym
+        index=1
+      end
       if @segments_by_name.has_key?(segment)
         if element.include?('.')
           (element, delim, item)=element.partition('.')
-          ret = @segments_by_name[ segment ].first.e(element.to_i).split(@item_delim)[item.to_i-1]
+          ret = @segments_by_name[ segment ][index-1].e(element.to_i).split(@item_delim)[item.to_i-1]
         else
-          ret = @segments_by_name[ segment ].first.e(element.to_i)
+          ret = @segments_by_name[ segment ][index-1].e(element.to_i)
         end
       end
     # /JJL
