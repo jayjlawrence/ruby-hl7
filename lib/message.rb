@@ -97,7 +97,7 @@ class HL7::Message
         segment=segment.to_sym
         index=1
       end
-      if @segments_by_name.has_key?(segment)
+      if @segments_by_name.has_key?(segment) && @segments_by_name[ segment ][index-1]
         if element.include?('.')
           (element, delim, item)=element.partition('.')
           ret = @segments_by_name[ segment ][index-1].e(element.to_i).split(@item_delim)[item.to_i-1]
