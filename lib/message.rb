@@ -281,7 +281,7 @@ class HL7::Message
     segment_generator.seg_name = segment_generator.seg_parts[0]
 
     new_seg = segment_generator.build
-    new_seg.segment_parent = self
+    new_seg.segment_parent = self if new_seg.respond_to?(:segment_parent=)
 
     choose_segment_from(last_seg, new_seg, segment_generator.seg_name)
   end
