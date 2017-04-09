@@ -63,6 +63,7 @@ class HL7::Message
 
   def parse( inobj )
     if inobj.kind_of?(String)
+      raise HL7::ParseError.new("HL7 message does not start with MSH in character positions 0, 1, and 2") unless inobj[0..2]=='MSH'
       generate_segments( message_parser.parse_string( inobj ))
     elsif inobj.respond_to?(:each)
       generate_segments_enumerable(inobj)
