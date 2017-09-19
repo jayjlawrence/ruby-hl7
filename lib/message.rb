@@ -85,7 +85,7 @@ class HL7::Message
   # index:: can be SEGMENT-element(.item) i.e. PID-4.1
   def []( index )
     ret = nil
-    if index.kind_of?(Range) || index.kind_of?(Fixnum)
+    if index.kind_of?(Range) || index.kind_of?(Numeric)
       ret = @segments[ index ]
 
     # JJL - support my PID-11.1 syntax
