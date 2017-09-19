@@ -137,11 +137,13 @@ class HL7::Message
       if @segments_by_name.has_key?(segment)
         if element.include?('.')
           (element, delim, item)=element.partition('.')
-          data=@segments_by_name[ segment ][index-1].e(element.to_i).split(@item_delim)
+          element = segment==:MSH ? element.to_i - 1 : element.to_i
+          data=@segments_by_name[ segment ][index-1].e(element).split(@item_delim)
           data[item.to_i-1]=value
-          ret = @segments_by_name[ segment ][index-1].write_field(element.to_i, data.join(@item_delim))
+          ret = @segments_by_name[ segment ][index-1].write_field(element, data.join(@item_delim))
         else
-          ret = @segments_by_name[ segment ][index-1].write_field(element.to_i, value)
+          element = segment==:MSH ? element.to_i - 1 : element.to_i
+          ret = @segments_by_name[ segment ][index-1].write_field(element, value)
         end
       end
       return ret
