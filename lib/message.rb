@@ -101,9 +101,11 @@ class HL7::Message
       if @segments_by_name.has_key?(segment) && @segments_by_name[ segment ][index-1]
         if element.include?('.')
           (element, delim, item)=element.partition('.')
-          ret = @segments_by_name[ segment ][index-1].e(element.to_i).to_s.split(@item_delim)[item.to_i-1]
+          element = segment==:MSH ? element.to_i - 1 : element.to_i
+          ret = @segments_by_name[ segment ][index-1].e(element).to_s.split(@item_delim)[item.to_i-1]
         else
-          ret = @segments_by_name[ segment ][index-1].e(element.to_i)
+          element = segment==:MSH ? element.to_i - 1 : element.to_i
+          ret = @segments_by_name[ segment ][index-1].e(element)
         end
       end
     # /JJL
