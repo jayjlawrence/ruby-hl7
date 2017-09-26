@@ -220,14 +220,23 @@ class HL7::Message
     @segments.length
   end
 
+  def encoding
+    case @segments[0].e(17)
+      when '8859/1'
+        Encoding::ISO_8859_1
+      else
+        Encoding::UTF_8
+    end
+  end
+
   # provide a screen-readable version of the message
   def to_s
-    @segments.collect { |s| s if s.to_s.length > 0 }.join( "\n" )
+    @segments.collect { |s| s if s.to_s.length > 0 }.join( "\n" ).encode(encoding)
   end
 
   # provide a HL7 spec version of the message
   def to_hl7
-    @segments.collect { |s| s if s.to_s.length > 0 }.join( @delimiter.segment )
+    @segments.collect { |s| s if s.to_s.length > 0 }.join( @delimiter.segment ).encode(encoding)
   end
 
   # provide the HL7 spec version of the message wrapped in MLLP
