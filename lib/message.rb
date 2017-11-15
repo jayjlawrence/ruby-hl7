@@ -138,7 +138,7 @@ class HL7::Message
         if element.include?('.')
           (element, delim, item)=element.partition('.')
           element = segment==:MSH ? element.to_i - 1 : element.to_i
-          data=@segments_by_name[ segment ][index-1].e(element).split(@item_delim)
+          data=@segments_by_name[ segment ][index-1].e(element).to_s.split(@item_delim)
           data[item.to_i-1]=value
           ret = @segments_by_name[ segment ][index-1].write_field(element, data.join(@item_delim))
         else
